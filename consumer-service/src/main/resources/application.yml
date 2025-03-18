@@ -1,0 +1,18 @@
+spring:
+  application:
+    name: customer-service  # 建議小寫，避免潛在問題
+  cloud:
+    consul:
+      host: localhost
+      port: 8500
+      discovery:
+        enabled: true
+        health-check-path: /actuator/health
+        health-check-interval: 30s
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+server:
+  port: 8081
