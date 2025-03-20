@@ -9,6 +9,9 @@ spring:
         enabled: true
         health-check-path: /actuator/health
         health-check-interval: 30s
+    openfeign:
+      circuitbreaker:
+        enabled: true
 resilience4j:
   circuitbreaker:
     instances:
@@ -30,6 +33,3 @@ management:
         include: health,info
 server:
   port: 8081
-feign:
-  circuitbreaker:
-    enabled: true  # 啟用 Feign 的 Resilience4j 熔斷器
