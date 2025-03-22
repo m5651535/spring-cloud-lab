@@ -1,0 +1,25 @@
+spring:
+  application:
+    name: gateway-service
+  cloud:
+    consul:
+      host: localhost
+      port: 8500
+      discovery:
+        enabled: true
+        service-name: ${spring.application.name}
+        health-check-path: /actuator/health
+        health-check-interval: 30s
+    gateway:
+      discovery:
+        locator:
+          enabled: false  # 關閉動態路由，僅使用手動路由
+      routes:
+        - id: consumer-service
+          uri: lb://consumer-service
+          predicates:
+            - Path=/consume/**
+#          filters:
+#            - StripPrefix=1  # 剝離 /consumer 前綴
+server:
+  port: 8085

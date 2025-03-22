@@ -24,7 +24,7 @@ public class ConsumerController {
 
     @GetMapping("/call")
     public String callMyService() {
-        String response = restTemplate.getForObject("http://my-service/hello/default", String.class);
+        String response = restTemplate.getForObject("http://my-service/hello/pathVariable/default", String.class);
         return "Response from customer-service: " + response;
     }
 

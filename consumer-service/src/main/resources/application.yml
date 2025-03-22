@@ -1,6 +1,6 @@
 spring:
   application:
-    name: customer-service  # 建議小寫，避免潛在問題
+    name: consumer-service  # 建議小寫，避免潛在問題
   cloud:
     consul:
       host: localhost
