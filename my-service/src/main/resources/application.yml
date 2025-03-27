@@ -14,7 +14,12 @@ management:
   endpoints:
     web:
       exposure:
-        include: health,info  # 暴露 Spring Boot Actuator 的端點，這裡啟用了 /actuator/health（健康檢查）和 /actuator/info（服務資訊）
-
+        include: health,info  # 暴露 Spring Boot Actuator 的端點，這裡啟用了 /actuator/health 和 /actuator/info
+  tracing:
+    sampling:
+      probability: 1.0  # 設定追蹤樣本比例，1.0 表示 100% 追蹤所有請求
+  zipkin:
+    tracing:
+      endpoint: http://localhost:9411/api/v2/spans  # Zipkin 的端點，用於接收追蹤資料
 server:
   port: 8082                # 服務運行的端口號，設定為 8082
