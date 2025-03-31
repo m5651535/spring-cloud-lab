@@ -9,7 +9,13 @@ spring:
         enabled: true       # 啟用 Consul 服務發現功能，允許此服務註冊到 Consul
         health-check-path: /actuator/health  # 健康檢查的路徑，Consul 會定期訪問此端點以檢查服務狀態
         health-check-interval: 30s           # 健康檢查的間隔時間，每 30 秒檢查一次服務健康狀況
-
+  kafka:
+    bootstrap-servers: localhost:9093
+    consumer:
+      group-id: my-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
 management:
   endpoints:
     web:

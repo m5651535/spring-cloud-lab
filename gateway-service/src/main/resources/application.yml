@@ -18,9 +18,9 @@ spring:
         - id: consumer-service  # 路由的唯一識別符，方便日誌和監控中識別此路由
           uri: lb://consumer-service  # 目標服務的 URI，使用負載均衡（lb://）並指向 Consul 中註冊的 consumer-service
           predicates:       # 路由的匹配條件
-            - Path=/consume/**  # 路徑匹配規則，所有以 /consume/ 開頭的請求都會被此路由處理
-#          filters:
-#            - StripPrefix=1  # 已註解掉的過濾器，若啟用，會移除路徑中的第一部分（例如 /consume/call 變成 /call）
+            - Path=/api/consume/**, /api/send/**  # 路徑匹配規則，所有以 /consume/ 開頭的請求都會被此路由處理
+          filters:
+            - StripPrefix=1  # 過濾器，會移除路徑中的第一部分（例如 /consume/call 變成 /call）
 management:
   endpoints:
     web:

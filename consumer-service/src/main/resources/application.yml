@@ -12,6 +12,11 @@ spring:
     openfeign:
       circuitbreaker:
         enabled: true       # 啟用 OpenFeign 的斷路器支持，與 Resilience4j 整合以處理服務調用失敗
+  kafka:
+    bootstrap-servers: localhost:9093
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
 resilience4j:
   circuitbreaker:
     instances:
