@@ -1,4 +1,4 @@
-package com.example.myService;
+package com.example.consumerService;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -6,8 +6,8 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 
 @SpringBootApplication
 @EnableDiscoveryClient
-public class MyServiceApplication {
+public class ConsumerServiceApplication {
 	public static void main(String[] args) {
-		SpringApplication.run(MyServiceApplication.class, args);
+		SpringApplication.run(ConsumerServiceApplication.class, args);
 	}
 }

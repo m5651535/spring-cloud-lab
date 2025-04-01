@@ -15,10 +15,10 @@ spring:
         locator:
           enabled: false    # 關閉 Gateway 的動態路由功能（即不根據服務名稱自動生成路由），僅使用手動配置的路由
       routes:              # 定義 Gateway 的路由規則
-        - id: consumer-service  # 路由的唯一識別符，方便日誌和監控中識別此路由
-          uri: lb://consumer-service  # 目標服務的 URI，使用負載均衡（lb://）並指向 Consul 中註冊的 consumer-service
+        - id: producer-service  # 路由的唯一識別符，方便日誌和監控中識別此路由
+          uri: lb://producer-service  # 目標服務的 URI，使用負載均衡（lb://）並指向 Consul 中註冊的 producer-service
           predicates:       # 路由的匹配條件
-            - Path=/api/consume/**, /api/send/**  # 路徑匹配規則，所有以 /consume/ 開頭的請求都會被此路由處理
+            - Path=/api/consume/**, /api/produce/**  # 路徑匹配規則，所有以 /consume/ 開頭的請求都會被此路由處理
           filters:
             - StripPrefix=1  # 過濾器，會移除路徑中的第一部分（例如 /consume/call 變成 /call）
 management:

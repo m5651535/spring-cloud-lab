@@ -29,8 +29,8 @@
 	</parent>
 
 	<modules>
+		<module>producer-service</module>
 		<module>consumer-service</module>
-		<module>my-service</module>
 		<module>common</module>
 		<module>gateway-service</module>
 	</modules>
@@ -98,6 +98,11 @@
 				<groupId>org.springframework.kafka</groupId>
 				<artifactId>spring-kafka</artifactId>
 				<version>4.0.0-M1</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-starter-stream-kafka</artifactId>
+				<version>4.2.1</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

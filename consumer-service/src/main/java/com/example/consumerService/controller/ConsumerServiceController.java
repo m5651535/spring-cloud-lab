@@ -1,4 +1,4 @@
-package com.example.myService.controller;
+package com.example.consumerService.controller;
 
 import dto.User;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,18 +12,18 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/hello")
-public class MyServiceController {
+public class ConsumerServiceController {
     @Value("${server.port}")
     private int serverPort;
 
     @GetMapping("/pathVariable/{name}")
     public String sayHelloByPathVariable(@PathVariable String name) {
-        return "Hello " + name + "! from my-service! port " + serverPort;
+        return "Hello " + name + "! from consumer-service! port " + serverPort;
     }
 
     @GetMapping("/requestParam")
     public String sayHelloByRequestParam(@RequestParam String name) {
-        return "Hello " + name + "! from my-service! port " + serverPort;
+        return "Hello " + name + "! from consumer-service! port " + serverPort;
     }
 
     @PostMapping("/createUser")

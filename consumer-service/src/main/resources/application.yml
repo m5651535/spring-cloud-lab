@@ -9,28 +9,27 @@ spring:
         enabled: true       # 啟用 Consul 服務發現功能，允許此服務註冊到 Consul
         health-check-path: /actuator/health  # 健康檢查的路徑，Consul 會定期訪問此端點以檢查服務狀態
         health-check-interval: 30s           # 健康檢查的間隔時間，每 30 秒檢查一次服務健康狀況
-    openfeign:
-      circuitbreaker:
-        enabled: true       # 啟用 OpenFeign 的斷路器支持，與 Resilience4j 整合以處理服務調用失敗
-  kafka:
-    bootstrap-servers: localhost:9093
-    producer:
-      key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: org.apache.kafka.common.serialization.StringSerializer
-resilience4j:
-  circuitbreaker:
-    instances:
-      default:             # 定義一個名為 "default" 的斷路器實例，應用於所有 Feign 客戶端（除非特別指定）
-        registerHealthIndicator: true  # 在 Spring Boot Actuator 中註冊健康指標，可以通過 /actuator/health 查看斷路器狀態
-        slidingWindowSize: 10          # 滑動窗口大小，記錄最近 10 次調用用於計算失敗率
-        failureRateThreshold: 50       # 失敗率閾值（百分比），當失敗率超過 50% 時斷路器跳閘（進入 OPEN 狀態）
-        waitDurationInOpenState: 10000ms  # 斷路器處於 OPEN 狀態的等待時間（10 秒），在此期間拒絕所有請求
-        permittedNumberOfCallsInHalfOpenState: 3  # HALF_OPEN 狀態下允許的請求數，用於測試服務是否恢復
-  retry:
-    instances:
-      default:             # 定義一個名為 "default" 的重試實例，應用於所有 Feign 客戶端（除非特別指定）
-        maxAttempts: 3     # 最大重試次數，若請求失敗，最多重試 3 次（總共 4 次請求：初次 + 3 次重試）
-        waitDuration: 500ms  # 每次重試之間的等待時間，設為 500 毫秒
+    stream:
+      bindings:
+        jsonInput:
+          destination: my-topic-json
+          group: my-group
+          content-type: application/json
+        stringInput:
+          destination: my-topic-string
+          group: my-group
+          content-type: text/plain
+        byteInput:
+          destination: my-topic-byte
+          group: my-group
+          content-type: application/octet-stream
+      kafka:
+        binder:
+          brokers: localhost:9093
+          configuration:
+            key.deserializer: org.apache.kafka.common.serialization.StringDeserializer
+            value.deserializer: org.springframework.kafka.support.serializer.JsonDeserializer  # JSON 預設
+            spring.json.trusted.packages: com.example.consumerService
 management:
   endpoints:
     web:
@@ -43,4 +42,4 @@ management:
     tracing:
       endpoint: http://localhost:9411/api/v2/spans  # Zipkin 的端點，用於接收追蹤資料
 server:
-  port: 8081                # 服務運行的端口號，設定為 8081
+  port: 8082                # 服務運行的端口號，設定為 8082
