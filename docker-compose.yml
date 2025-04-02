@@ -13,7 +13,7 @@ services:
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_LISTENERS: PLAINTEXT://:9093
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9093
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9093
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'true'
@@ -22,14 +22,18 @@ services:
       - "9093:9093"
     volumes:
       - kafka_data:/kafka
+      - ./register-kafka.sh:/register-kafka.sh
     depends_on:
       - zookeeper
+      - consul
+    command: >
+      sh -c "/register-kafka.sh kafka-1 9093 & start-kafka.sh"
 
   consul:
-    image: hashicorp/consul:1.20  # 改為 1.20 版本
+    image: hashicorp/consul:1.20
     ports:
-      - "8500:8500"  # Consul UI 和 HTTP API
-      - "8600:8600/udp"  # DNS 服務
+      - "8500:8500"
+      - "8600:8600/udp"
     volumes:
       - consul_data:/consul/data
     command: "agent -server -bootstrap-expect=1 -ui -client=0.0.0.0"
@@ -37,10 +41,10 @@ services:
   zipkin:
     image: openzipkin/zipkin:latest
     environment:
-      STORAGE_TYPE: mem  # 使用記憶體儲存
-      KAFKA_BOOTSTRAP_SERVERS: kafka:9093  # 連接到 Kafka
+      STORAGE_TYPE: mem
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9093
     ports:
-      - "9411:9411"  # Zipkin UI 和 API
+      - "9411:9411"
     depends_on:
       - kafka
 
