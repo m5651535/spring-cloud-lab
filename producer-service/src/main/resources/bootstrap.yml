@@ -1,0 +1,21 @@
+spring:
+  profiles:
+    active: dev
+  application:
+    name: producer-service
+  config:
+    import: "consul:"
+  cloud:
+    consul:
+      host: localhost
+      port: 8500
+      config:
+        enabled: true
+        format: YAML
+        prefixes: config
+        default-context: producer-service
+      discovery:
+        enabled: true
+        instance-id: ${spring.application.name}:${server.port:8081}  # 使用默認值 8081
+#server:
+#  port: 8081  # 明確設置端口
