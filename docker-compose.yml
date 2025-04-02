@@ -18,16 +18,19 @@ services:
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'true'
       KAFKA_NUM_PARTITIONS: 1
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
     ports:
       - "9093:9093"
     volumes:
       - kafka_data:/kafka
-      - ./register-kafka.sh:/register-kafka.sh
     depends_on:
       - zookeeper
-      - consul
-    command: >
-      sh -c "/register-kafka.sh kafka-1 9093 & start-kafka.sh"
+    healthcheck:
+      test: ["CMD-SHELL", "kafka-topics.sh --bootstrap-server localhost:9093 --list || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
 
   consul:
     image: hashicorp/consul:1.20
@@ -37,6 +40,23 @@ services:
     volumes:
       - consul_data:/consul/data
     command: "agent -server -bootstrap-expect=1 -ui -client=0.0.0.0"
+    healthcheck:
+      test: ["CMD", "consul", "members"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  kafka-registrar:
+    image: alpine:latest
+    depends_on:
+      kafka:
+        condition: service_healthy
+      consul:
+        condition: service_healthy
+    volumes:
+      - ./register-kafka.sh:/register-kafka.sh
+    command: sh -c "apk add --no-cache curl jq && chmod +x /register-kafka.sh && /register-kafka.sh"
+    restart: on-failure
 
   zipkin:
     image: openzipkin/zipkin:latest
@@ -46,7 +66,8 @@ services:
     ports:
       - "9411:9411"
     depends_on:
-      - kafka
+      kafka:
+        condition: service_healthy
 
 volumes:
   zookeeper_data:

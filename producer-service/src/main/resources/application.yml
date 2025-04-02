@@ -1,10 +1,21 @@
 spring:
   application:
     name: producer-service
+  config:
+    import: "optional:consul:"
   cloud:
     consul:
       host: localhost
       port: 8500
+      config:
+        enabled: true
+        format: YAML
+        prefixes:
+         - config
+        default-context: application
+        data-key: data
+        watch:
+          enabled: true
       discovery:
         enabled: true
         health-check-path: /actuator/health
