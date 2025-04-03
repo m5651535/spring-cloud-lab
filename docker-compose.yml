@@ -58,6 +58,30 @@ services:
     command: sh -c "apk add --no-cache curl jq && chmod +x /register-kafka.sh && /register-kafka.sh"
     restart: on-failure
 
+  config-sync:
+    image: hashicorp/consul:1.20
+    volumes:
+      - ./git-repo:/git-repo
+      - ./sync-to-consul.sh:/sync-to-consul.sh
+    environment:
+      - CONSUL_HTTP_ADDR=consul:8500
+      - GIT_REPO_URL=https://github.com/m5651535/spring-cloud-configs.git
+    command: sh -c "apk add --no-cache git bash curl && if [ ! -d '/git-repo/.git' ]; then git clone $$GIT_REPO_URL /git-repo; fi && tail -f /dev/null"  # 保持容器運行
+    depends_on:
+      consul:
+        condition: service_healthy
+    restart: on-failure
+
+  webhook:
+    image: python:3.9-slim
+    volumes:
+      - ./webhook_server.py:/app/webhook_server.py
+    command: sh -c "pip install --no-cache-dir flask && python /app/webhook_server.py"
+    ports:
+      - "8080:8080"
+    depends_on:
+      - config-sync
+
   zipkin:
     image: openzipkin/zipkin:latest
     environment:
