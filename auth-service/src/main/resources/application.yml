@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: auth-service  # 應用程序的名稱，建議使用小寫，避免潛在的兼容性問題（例如 Consul 或其他服務發現工具可能對大小寫敏感）
+  cloud:
+    consul:
+      host: localhost
+      port: 8500
+      discovery:
+        enabled: true
+        health-check-path: /actuator/health
+        health-check-interval: 30s
+server:
+  port: 8086
